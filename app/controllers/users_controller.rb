@@ -6,6 +6,7 @@ class UsersController < ApplicationController
 
   def index
     @user = User.all;
+    puts "current_user is #{session[:user_token]}"
     render json: {users: @user}
   end
 
@@ -36,6 +37,7 @@ class UsersController < ApplicationController
         payload = {data: data, sub: @user.id, exp: Time.now.to_i + 1 * 3600}
 
         token = JWT.encode payload, JWT_SECRET, 'HS512'
+        cookies[:user_token] = {value: token, httponly: true}
         render json: {token: token}
 
       else
